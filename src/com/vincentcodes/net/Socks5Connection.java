@@ -10,48 +10,44 @@ import java.net.Socket;
 import com.vincentcodes.net.auth.BadCredentials;
 import com.vincentcodes.net.auth.UserPassAuthenticator;
 import com.vincentcodes.net.auth.UserPassMessage;
+import com.vincentcodes.net.defaults.EndpointConnectorImpl;
+import com.vincentcodes.net.defaults.ProxyDataTransferHandlerImpl;
+import com.vincentcodes.net.utils.IOContainer;
 
 public class Socks5Connection implements Runnable{
-    public static byte[] SUPPORTED_METHODS = {
-        SelectionMessage.Methods.NO_AUTHENTICATION_REQUIRED,
-        SelectionMessage.Methods.USERNAME_PASSWORD,
-    };
 
-    private Socket client;
+    private IOContainer client;
     private InputStream bis;
     private OutputStream os;
 
     private UserPassAuthenticator authenticator = ($) -> true;
+    private EndpointConnector endpointConnector = new EndpointConnectorImpl();
+    private ProxyDataTransferHandler dataTransferHandler = new ProxyDataTransferHandlerImpl();
 
     public Socks5Connection(Socket client) throws IOException{
-        this.client = client;
         bis = new BufferedInputStream(client.getInputStream());
         os = client.getOutputStream();
+        this.client = new IOContainer(client, bis, os);
     }
 
     @Override
     public void run() {
-        Socks5Server.LOGGER.info("Received connection from " + client.getRemoteSocketAddress());
+        Socks5Server.LOGGER.info("Received connection from " + client.getSocket().getRemoteSocketAddress());
         try {
             byte[] methods = negotiate();
-            // if auth, use UserPassMessage.parse, UserPassMessage.serverReply
             byte selectedMethod = selectMethod(methods);
             SelectionMessage.streamTo(os, SelectionMessage.createServerMessage(selectedMethod));
 
             subnegotiate(selectedMethod);
 
-            // TODO: Test echo server
             SocksRequest request = SocksRequest.parse(bis);
+            IOContainer endpoint = endpointConnector.connectToEndpoint(request);
 
             SocksReply reply = new SocksReply(
                 SocksReply.StatusCodes.SUCCEEDED, SocksReply.AddrType.IPv4, request.dstAddr, request.dstPort);
             SocksReply.streamTo(os, reply);
 
-            byte[] buffer = new byte[1024];
-            int count = bis.read(buffer);
-            System.out.println(new String(buffer));
-
-            os.write(buffer, 0, count);
+            dataTransferHandler.takeover(client, endpoint);
         } catch (IOException e) {
             // if(e.getMessage().startsWith("Connection reset")) return;
             e.printStackTrace();
