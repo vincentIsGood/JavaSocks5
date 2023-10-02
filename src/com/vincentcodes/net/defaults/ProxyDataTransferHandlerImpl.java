@@ -15,7 +15,6 @@ public class ProxyDataTransferHandlerImpl implements ProxyDataTransferHandler {
             @Override
             public void run() {
                 try {
-                    System.out.println("[+] Starting endpoint to client thread: " + Thread.currentThread().getName());
                     IOUtils.readFromAsendToB(endpoint, client);
                 } catch (IOException e) {
                     e.printStackTrace();

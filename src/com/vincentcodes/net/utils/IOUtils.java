@@ -16,9 +16,7 @@ public class IOUtils {
     public static void readFromAsendToB(InputStream is, OutputStream os) throws IOException{
         byte[] buffer = new byte[4096];
         int count;
-        System.out.println("[*] Start reading from thread: " + Thread.currentThread().getName());
         while((count = is.read(buffer)) != -1){
-            System.out.println("Read count: " + count);
             os.write(buffer, 0, count);
             os.flush();
         }
