@@ -12,6 +12,9 @@ import com.vincentcodes.net.auth.UserPassAuthenticator;
 import com.vincentcodes.net.auth.UserPassMessage;
 import com.vincentcodes.net.defaults.EndpointConnectorImpl;
 import com.vincentcodes.net.defaults.ProxyDataTransferHandlerImpl;
+import com.vincentcodes.net.message.SelectionMessage;
+import com.vincentcodes.net.message.SocksReply;
+import com.vincentcodes.net.message.SocksRequest;
 import com.vincentcodes.net.utils.IOContainer;
 
 public class Socks5Connection implements Runnable{
@@ -22,7 +25,7 @@ public class Socks5Connection implements Runnable{
 
     private UserPassAuthenticator authenticator = ($) -> true;
     private EndpointConnector endpointConnector = new EndpointConnectorImpl();
-    private ProxyDataTransferHandler dataTransferHandler = new ProxyDataTransferHandlerImpl();
+    private ProxyTunnelHandler proxyTunnelHandler = new ProxyDataTransferHandlerImpl();
 
     public Socks5Connection(Socket client) throws IOException{
         bis = new BufferedInputStream(client.getInputStream());
@@ -32,7 +35,7 @@ public class Socks5Connection implements Runnable{
 
     @Override
     public void run() {
-        Socks5Server.LOGGER.info("Received connection from " + client.getSocket().getRemoteSocketAddress());
+        Socks5Server.LOGGER.debug("Received connection from " + client.getSocket().getRemoteSocketAddress());
         try {
             byte[] methods = negotiate();
             byte selectedMethod = selectMethod(methods);
@@ -47,7 +50,7 @@ public class Socks5Connection implements Runnable{
                 SocksReply.StatusCodes.SUCCEEDED, SocksReply.AddrType.IPv4, request.dstAddr, request.dstPort);
             SocksReply.streamTo(os, reply);
 
-            dataTransferHandler.takeover(client, endpoint);
+            proxyTunnelHandler.takeover(client, endpoint);
         } catch (IOException e) {
             // if(e.getMessage().startsWith("Connection reset")) return;
             e.printStackTrace();

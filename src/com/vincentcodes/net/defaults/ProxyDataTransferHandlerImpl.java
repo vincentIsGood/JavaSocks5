@@ -3,11 +3,11 @@ package com.vincentcodes.net.defaults;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import com.vincentcodes.net.ProxyDataTransferHandler;
+import com.vincentcodes.net.ProxyTunnelHandler;
 import com.vincentcodes.net.utils.IOContainer;
 import com.vincentcodes.net.utils.IOUtils;
 
-public class ProxyDataTransferHandlerImpl implements ProxyDataTransferHandler {
+public class ProxyDataTransferHandlerImpl implements ProxyTunnelHandler {
 
     @Override
     public void takeover(IOContainer client, IOContainer endpoint) throws IOException {

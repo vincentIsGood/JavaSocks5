@@ -15,11 +15,11 @@ public class Socks5Server {
     private ExecutorService executorService = Executors.newFixedThreadPool(16);
     private boolean closeRequested = false;
 
-    private int port;
-    private InetAddress bindAddr;
+    private final int port;
+    private final InetAddress bindAddr;
 
     public Socks5Server(int port){
-        this.port = port;
+        this(port, null);
     }
     public Socks5Server(int port, InetAddress bindAddr){
         this.port = port;

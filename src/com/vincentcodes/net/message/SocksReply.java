@@ -1,4 +1,4 @@
-package com.vincentcodes.net;
+package com.vincentcodes.net.message;
 
 import java.io.IOException;
 import java.io.InputStream;

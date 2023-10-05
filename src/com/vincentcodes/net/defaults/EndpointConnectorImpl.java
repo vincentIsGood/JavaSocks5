@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import com.vincentcodes.net.EndpointConnector;
-import com.vincentcodes.net.SocksRequest;
+import com.vincentcodes.net.message.SocksRequest;
 import com.vincentcodes.net.utils.IOContainer;
 
 public class EndpointConnectorImpl implements EndpointConnector {
