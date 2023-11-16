@@ -10,6 +10,7 @@ import com.vincentcodes.net.Socks5Server;
 
 public class TestEchoServer {
     public static void main(String[] args) throws IOException {
+        // Start echo server to simulate a remote server.
         Thread echoServerEndpoint = new Thread(){
             public void run() {
                 System.out.println("[+] Starting echo server on port 1234");
@@ -26,6 +27,7 @@ public class TestEchoServer {
         };
         echoServerEndpoint.start();
         
+        // Starts socks5 server on 1080.
         new Socks5Server(1080).start();
     }
 

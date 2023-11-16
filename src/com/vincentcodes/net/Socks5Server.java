@@ -28,6 +28,7 @@ public class Socks5Server {
 
     public void start() throws IOException{
         LOGGER.info("Server is running on port " + port);
+        // TODO: currently the server operates on unencrypted environment
         try (ServerSocket serverSocket = new ServerSocket(port, 50, bindAddr)) {
             while(!closeRequested){
                 executorService.submit(new Socks5Connection(serverSocket.accept()));
