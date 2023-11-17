@@ -35,7 +35,7 @@ public class Socks5Connection implements Runnable{
 
     @Override
     public void run() {
-        Socks5Server.LOGGER.debug("Received connection from " + client.getSocket().getRemoteSocketAddress());
+        Socks5Server.LOGGER.info("Received connection from " + client.getSocket().getRemoteSocketAddress());
         try {
             byte[] methods = negotiate();
             byte selectedMethod = selectMethod(methods);
