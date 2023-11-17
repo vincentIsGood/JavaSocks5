@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.vincentcodes.net.Socks5Server;
-
 public class IOUtils {
     /**
      * [blocking] read until end of stream

@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 
 import com.vincentcodes.net.ConnectorResult;
 import com.vincentcodes.net.EndpointConnector;

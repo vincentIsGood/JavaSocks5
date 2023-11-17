@@ -11,7 +11,15 @@ import com.vincentcodes.net.message.SelectionMessage;
 import com.vincentcodes.net.message.SocksRequest;
 
 /**
- * Prepare your own webserver 127.0.0.1:1234
+ * Prepare your own webserver 127.0.0.1:1234.
+ * <p>
+ * You can use cURL to further test the socks5 server:
+ * <code>{@code
+ * curl --socks5 127.0.0.1:1080 -v 127.0.0.1:1234
+ * 
+ * # let socks5 server do the domain name resolution
+ * curl --socks5-hostname localhost:1080 -v 127.0.0.1:1234
+ * }</code>
  */
 public class HttpTest {
     public static void main(String[] args) throws IOException {
