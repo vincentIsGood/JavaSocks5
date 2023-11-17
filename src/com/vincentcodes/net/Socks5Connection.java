@@ -39,25 +39,33 @@ public class Socks5Connection implements Runnable{
         try {
             byte[] methods = negotiate();
             byte selectedMethod = selectMethod(methods);
-            SelectionMessage.streamTo(os, SelectionMessage.createServerMessage(selectedMethod));
+            SelectionMessage responseMessage = SelectionMessage.createServerMessage(selectedMethod);
+            Socks5Server.LOGGER.debug("Server: " + responseMessage.toString());
+            SelectionMessage.streamTo(os, responseMessage);
 
             subnegotiate(selectedMethod);
 
             SocksRequest request = SocksRequest.parse(bis);
-            IOContainer endpoint = endpointConnector.connectToEndpoint(request);
+            Socks5Server.LOGGER.debug("Client: " + request.toString());
+            ConnectorResult connectorResult = endpointConnector.connectToEndpoint(request);
+            IOContainer endpoint = connectorResult.socket;
 
             SocksReply reply = new SocksReply(
-                SocksReply.StatusCodes.SUCCEEDED, SocksReply.AddrType.IPv4, request.dstAddr, request.dstPort);
+                SocksReply.StatusCodes.SUCCEEDED, SocksReply.AddrType.IPv4, connectorResult.addr, connectorResult.port);
+            Socks5Server.LOGGER.debug("Server: " + reply.toString());
             SocksReply.streamTo(os, reply);
 
             proxyTunnelHandler.takeover(client, endpoint);
         } catch (IOException e) {
-            // if(e.getMessage().startsWith("Connection reset")) return;
+            if(e.getMessage().startsWith("Connection reset")
+            || e.getMessage().startsWith("An established")) return;
             e.printStackTrace();
             throw new UncheckedIOException(e);
         } catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
+        }finally{
+            Socks5Server.LOGGER.debug("Connection closed: " + client.getSocket().getRemoteSocketAddress());
         }
     }
 
@@ -65,7 +73,9 @@ public class Socks5Connection implements Runnable{
      * @return all methods that the client wants 
      */
     private byte[] negotiate() throws IOException{
-        return SelectionMessage.parse(bis, true).methods;
+        SelectionMessage selectionMessage = SelectionMessage.parse(bis, true);
+        Socks5Server.LOGGER.debug("Client: " + selectionMessage.toString());
+        return selectionMessage.methods;
     }
 
     private byte selectMethod(byte[] methods){

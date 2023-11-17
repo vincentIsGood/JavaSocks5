@@ -18,7 +18,7 @@ public class SelectionMessage {
     
     public static final byte[] DEFAULT_CLIENT_MSG = {
         Methods.NO_AUTHENTICATION_REQUIRED,
-        Methods.USERNAME_PASSWORD
+        // Methods.USERNAME_PASSWORD
     };
 
     public final int version = 5; // socks5
@@ -71,7 +71,7 @@ public class SelectionMessage {
         return msg;
     }
 
-    public static String toString(SelectionMessage msg){
-        return String.format("SelectionMessage{ver: %d, meth: %d, methods: %s}", msg.version, msg.selectedMethod, msg.methods == null? "null" : Arrays.toString(msg.methods));
+    public String toString(){
+        return String.format("SelectionMessage{ver: %d, meth: %d, methods: %s}", version, selectedMethod, methods == null? "null" : Arrays.toString(methods));
     }
 }

@@ -70,10 +70,10 @@ public class SocksRequest {
         return req;
     }
 
-    public static String toString(SocksRequest req){
+    public String toString(){
         return String.format(
             "SocketRequest{v: %d, cmd: %d, addr: %s, dst: %s, port: %d}", 
-            req.version, req.cmd, req.addrType, Arrays.toString(req.dstAddr), req.dstPort
+            version, cmd, addrType, Arrays.toString(dstAddr), dstPort
         );
     }
 }

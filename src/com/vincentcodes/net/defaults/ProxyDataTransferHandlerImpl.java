@@ -17,6 +17,8 @@ public class ProxyDataTransferHandlerImpl implements ProxyTunnelHandler {
                 try {
                     IOUtils.readFromAsendToB(endpoint, client);
                 } catch (IOException e) {
+                    if(e.getMessage().startsWith("Connection reset")
+                    || e.getMessage().startsWith("An established")) return;
                     e.printStackTrace();
                     throw new UncheckedIOException(e);
                 }

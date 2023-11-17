@@ -76,10 +76,10 @@ public class SocksReply {
         return reply;
     }
 
-    public static String toString(SocksReply rep){
+    public String toString(){
         return String.format(
             "SocketReply{v: %d, status: %d, addr: %s, bind: %s, port: %d}", 
-            rep.version, rep.replyStatus, rep.addrType, Arrays.toString(rep.bindAddr), rep.bindPort
+            version, replyStatus, addrType, Arrays.toString(bindAddr), bindPort
         );
     }
 }
